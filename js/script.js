@@ -2,8 +2,8 @@ let myInput = document.querySelector('.add-task input');
 let btnAdd = document.querySelector('.add-task span');
 let noTask = document.querySelector('.no-task-content');
 let Task = document.querySelector('.task-content');
-let myCount = document.querySelector('.task-count');
-let myComplete = document.querySelector('.task-complete');
+let myCount = document.querySelector('.task-count span');
+let myComplete = document.querySelector('.task-complete span');
 let clearBtn = document.querySelector('.clear');
 let fallBtn = document.querySelector('.finish-all');
 let arr = [];
@@ -31,11 +31,14 @@ btnAdd.onclick = function () {
         myInput.focus();
     }
     else {
-        noTask.remove();
+        noTask = document.querySelector('.no-task-content');
+        if (document.body.contains(document.querySelector('.no-task-content')))
+            noTask.remove();
         createTask();
         box = document.querySelector('.task-content').lastChild.innerText;
         box = box.substring(0, box.indexOf('\n'));
         arr.push(box);
+        calculateTask();
     }
 }
 
@@ -49,15 +52,9 @@ clearBtn.onclick = function () {
     }
     while (arr.length > 0)
         arr.pop();
-
-    let noTaskSpan = document.createElement('span');
-    noTaskSpan.setAttribute('class', 'no-task-content');
-    let taskText = document.createTextNode('No Task Add');
-    noTaskSpan.appendChild(taskText);
-    Task.append(noTaskSpan);
     
-    noTask = document.querySelector('.no-task-content');
-
+    createNoTask();
+    calculateTask();
 }
 
 fallBtn.onclick = function () {
@@ -66,9 +63,10 @@ fallBtn.onclick = function () {
     let i = 0;
 
     while (i < myVar.length) {
-        myVar.item(i).classList.add('finished');
+        myVar.item(i).classList.toggle('finished');
         i++;
     }
+    calculateTask();
 }
 
 function createTask() {
@@ -124,9 +122,34 @@ document.addEventListener('click', function (e) {
             if (arr[index] === myVar)
                 arr.splice(index, 1);
         }
+
         e.target.parentElement.remove();
+
+        if (Task.childElementCount === 0)
+            createNoTask();
+        calculateTask();
     }
     if (e.target.className == 'finish') {
-        e.target.parentElement.classList.add('finished');
+        e.target.parentElement.classList.toggle('finished');
+        calculateTask();
     }
 })
+
+function createNoTask() {
+    
+    let noTaskSpan = document.createElement('span');
+    noTaskSpan.setAttribute('class', 'no-task-content');
+
+    let taskText = document.createTextNode('No Task Add');
+    noTaskSpan.appendChild(taskText);
+
+    Task.append(noTaskSpan);
+}
+
+function calculateTask() {
+
+    myCount.innerHTML = document.querySelectorAll('.task-box').length;
+
+    myComplete.innerHTML = document.querySelectorAll('.task-box.finished').length;
+    
+}
