@@ -129,8 +129,18 @@ document.addEventListener('click', function (e) {
             createNoTask();
         calculateTask();
     }
+
     if (e.target.className == 'finish') {
+        
         e.target.parentElement.classList.toggle('finished');
+        
+        if (e.target.innerText === 'Unfinished') {
+            e.target.innerText = 'Finish';
+        }
+        else {
+            e.target.innerText = 'Unfinished';
+        }
+
         calculateTask();
     }
 })
